@@ -1,44 +1,14 @@
-(function() {
-  chrome.commands.onCommand.addListener(function(command) {
-    chrome.tabs.query({
-        'url': 'https://www.youtube.com/watch*'
-      },
-      (tabs) => {
-        window.youtube_tab = tabs[0]
-        if (command == 'play-stop') {
-          click_btn('ytp-play-button')
-        } else if (command == 'next-video') {
-          click_btn('ytp-next-button')
-        } else if (command == 'previous-video') {
-          click_btn('ytp-prev-button')
-        } else if (command == 'show-title') {
-          show_title()
+parseWiki = (document, port)=> {
+    title = $('div#body h2', document).text().replace(/Problem\s\d{1,3}|「|」|\s|†/g, '')
+    body = $.makeArray($('div#body p', document)).reduce((str, node)=> { return str += node.innerText + '<br>' }, '')
+    port.postMessage({status: 'parsed', title: title, body: body})
+}
+
+chrome.extension.onConnect.addListener(function(port) {
+    console.assert(port.name === 'eulertrans');
+    port.onMessage.addListener(function(msg) {
+        if(msg.status === 'start'){
+            $.get('http://odz.sakura.ne.jp/projecteuler/index.php', {cmd: 'read', page: `Problem ${msg.number}`}, (res)=> {parseWiki(res, port)})
         }
-      }
-    )
-  })
-})()
-
-function click_btn(class_name) {
-  chrome.tabs.executeScript(window.youtube_tab.id, {
-    'code': 'document.getElementsByClassName("' + class_name + '")[0].click()'
-  })
-}
-
-function show_title() {
-  chrome.tabs.executeScript(window.youtube_tab.id, {
-      'code': 'document.getElementsByClassName("title ytd-video-primary-info-renderer")[0].innerText;'
-    },
-    (ret_arr) => {
-      console.log(ret_arr)
-      var opt = {
-        type: 'basic',
-        title: 'Command Youtube Controller',
-        message: ret_arr[0],
-        iconUrl: "icons/icon128.png"
-      }
-
-      chrome.notifications.create("", opt, function(id) {})
-    }
-  )
-}
+    })
+})
