@@ -1,47 +1,25 @@
 {
-  "name": "Command Tube Controller",
+  "name": "Project Euler Translate into Japanese",
   "version": "0.0.1",
   "manifest_version": 2,
-  "description": "This is made for me, listnening musics on Youtube in the office.",
+  "description": "Project Euler is too difficult for me to comprehend what is wrote, so translate it.",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
   },
-  "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  "commands": {
-    "play-stop": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Space",
-        "mac": "Command+Shift+Space"
-      },
-      "description": "play or stop youtube video"
-    },
-    "previous-video": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Left",
-        "mac": "Command+Shift+Left"
-      },
-      "description": "go previous youtube video"
-    },
-    "next-video": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Right",
-        "mac": "Command+Shift+Right"
-      },
-      "description": "go next youtube video"
-    },
-    "show-title": {
-      "suggested_key": {
-        "default": "Ctrl+Shift+Up",
-        "mac": "Command+Shift+Up"
-      },
-      "description": "show title on notification"
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": [
+        "content-script.js"
+      ]
     }
-
-  },
-  "permissions": ["commands", "notifications", "tabs", "https://www.youtube.com/*"]
+  ],
+  "web_accessible_resources": [
+    "embeded-script.js"
+  ],
+  "permissions": ["tabs", "https://projecteuler.net/problem=*", "http://odz.sakura.ne.jp/projecteuler/*"]
 }
