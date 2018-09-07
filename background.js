@@ -1,7 +1,8 @@
 parseWiki = (document, port)=> {
-    title = $('div#body h2', document).text().replace(/Problem\s\d{1,3}|「|」|\s|†/g, '')
-    body = $.makeArray($('div#body p', document)).reduce((str, node)=> { return str += node.innerText + '<br>' }, '')
-    port.postMessage({status: 'parsed', title: title, body: body})
+    const title = $('div#body h2', document).text().replace(/Problem\s\d{1,3}|「|」|\s|†/g, '')
+    let body = $('div#body', document)
+    $('h2', body).remove()
+    port.postMessage({status: 'parsed', title: title, body: body.html()})
 }
 
 chrome.extension.onConnect.addListener(function(port) {
